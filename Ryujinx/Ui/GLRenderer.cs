@@ -7,7 +7,7 @@ using Ryujinx.Input.HLE;
 using SPB.Graphics;
 using SPB.Graphics.OpenGL;
 using SPB.Platform;
-using SPB.Platform.GLX;
+using SPB.Platform.EGL;
 using SPB.Platform.WGL;
 using SPB.Windowing;
 using System;
@@ -48,6 +48,7 @@ namespace Ryujinx.Ui
             _openGLContext = PlatformHelper.CreateOpenGLContext(GetGraphicsMode(), 3, 3, _glLogLevel == GraphicsDebugLevel.None ? OpenGLContextFlags.Compat : OpenGLContextFlags.Compat | OpenGLContextFlags.Debug);
             _openGLContext.Initialize(_nativeWindow);
             _openGLContext.MakeCurrent(_nativeWindow);
+            Console.WriteLine("Done hae bosh");
 
             // Release the GL exclusivity that SPB gave us as we aren't going to use it in GTK Thread.
             _openGLContext.MakeCurrent(null);
@@ -70,7 +71,7 @@ namespace Ryujinx.Ui
                 IntPtr displayHandle = gdk_x11_display_get_xdisplay(Display.Handle);
                 IntPtr windowHandle = gdk_x11_window_get_xid(Window.Handle);
 
-                return new GLXWindow(new NativeHandle(displayHandle), new NativeHandle(windowHandle));
+                return new EGLWindow(new NativeHandle(displayHandle), new NativeHandle(windowHandle));
             }
 
             throw new NotImplementedException();
@@ -94,7 +95,6 @@ namespace Ryujinx.Ui
         {
             // First take exclusivity on the OpenGL context.
             ((Renderer)Renderer).InitializeBackgroundContext(SPBOpenGLContext.CreateBackgroundContext(_openGLContext));
-
             _openGLContext.MakeCurrent(_nativeWindow);
 
             GL.ClearColor(0, 0, 0, 1.0f);
